@@ -34,7 +34,11 @@ impl Calendar {
         println!("Sun\tMon\tTue\tWed\tThu\tFri\tSat");
         for w in self.days {
             for d in w {
-                print!("{}\t", d);
+                if d != 0{
+                    print!("{}\t", d);
+                }else {
+                    print!(" \t");
+                }
             }
             println!()
         }
