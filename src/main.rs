@@ -88,7 +88,8 @@ Usage: rust-calendar [ARGUMENTS]
 Arguments:
     now\t\t\tPrints the calendar for the current month
     debug_calendar\tDebug prints the calendar for the current month
-    help\t\tShow this help";
+    help\t\tShow this help
+    year_month\t\tPrint a calendar for a month and year,Usage:rust-calendar year_month YEAR MONTH";
     println!("{}",usage);
 }
 fn main() {
@@ -108,7 +109,49 @@ fn main() {
             "help" =>{
                 print_help();
             },
+            "year_month"=>{
+                println!("year_month:
+Usage:rust-calendar year_month YEAR MONTH")
+            }
             _ => {
+                eprintln!("unknown arguments");
+            }
+        }
+    }
+    if args.len() == 3{
+        match args[1].as_str() {
+            _=>{
+                eprintln!("unknown arguments");
+            }
+        }
+    }
+    if args.len() == 4{
+        match args[1].as_str() {
+            "year_month" => {
+                let year = match args[2].parse().ok() {
+                    Some(y) => y,
+                    None => panic!("Error year"),
+                };
+                let month = match args[3].parse().ok() {
+                    Some(m) => m,
+                    None => panic!("Error month"),
+                };
+                let nd = match NaiveDate::from_ymd_opt(year, month, 1) {
+                    Some(nd) => nd,
+                    None => panic!("Error date"),
+                };
+                let mut c = Calendar::new(nd.weekday().num_days_from_sunday(), Calendar::num_day_of_month(nd.year(), nd.month()));
+                c.init();
+                c.print_calendar();
+            },
+            _=>{
+                eprintln!("unknown arguments");
+            }
+        }
+    }
+    if args.len() == 5{
+        match args[1].as_str() {
+            _=>{
                 eprintln!("unknown arguments");
             }
         }
