@@ -1,88 +1,12 @@
-use std::env;
+#![crate_name = "rust_calendar"]
+#![crate_type = "bin"]
 
-use chrono::prelude::*;
-#[derive(Debug)]
-pub(crate) struct Calendar {
-    first_day: u32,
-    num_of_days: u32,
-    days: [[u32; 7]; 6],
-}
-impl Calendar {
-    fn new(first_day: u32, num_of_days: u32) -> Calendar {
-        Calendar {
-            first_day,
-            num_of_days,
-            days: [[0; 7]; 6],
-        }
-    }
-    fn init(&mut self) {
-        let mut curday: u32 = self.first_day;
-        let mut num_of_weeks: usize = 0;
-        for d in 1..=self.num_of_days {
-            if curday >= 7 {
-                num_of_weeks += 1;
-                curday = 0;
-                self.days[num_of_weeks][curday as usize] = d;
-                curday += 1;
-            } else {
-                self.days[num_of_weeks][curday as usize] = d;
-                curday += 1;
-            }
-        }
-    }
-    fn print_calendar(&self) {
-        println!("Sun\tMon\tTue\tWed\tThu\tFri\tSat");
-        for w in self.days {
-            for d in w {
-                if d != 0{
-                    print!("{}\t", d);
-                }else {
-                    print!(" \t");
-                }
-            }
-            println!()
-        }
-    }
-    /// 用于计算一年中的一个月有几天
-    /// year 这个月所在的年份
-    /// month 这个月是几月，一月是1
-    fn num_day_of_month(year: i32, month: u32) -> u32{
-        //判断是否是闰年
-        let is_rn = ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
-        return match month {
-            1 | 3 | 5 | 7 | 8 | 10 | 12 => 31, //1，3，5，7，8，10，12是大月
-            4 | 6 | 9 | 11 => 30,//4，6,9,11是小月
-            2 => match is_rn {
-                true => 29,//2月闰年29天，平年28天
-                false => 28,
-            },
-            _ => 30,
-        };
-    }
-    fn get_print_calendar_now() -> Calendar {
-        let date = Local::now();
-        let first_day = date.clone().with_day(1);
-        let mut c: Calendar = Calendar::new(
-            first_day.unwrap().weekday().num_days_from_sunday(),
-            Self::num_day_of_month(date.year(),date.month()),
-        );
-        c.init();
-        c.print_calendar();
-        c
-    }
-    fn get_calendar_now() -> Calendar {
-        let date = Local::now();
-        let first_day = date.clone().with_day(1);
-        let mut c: Calendar = Calendar::new(
-            first_day.unwrap().weekday().num_days_from_sunday(),
-            Self::num_day_of_month(date.year(),date.month()),
-        );
-        c.init();
-        c
-    }
+mod calendar;
+mod options;
+use calendar::Calendar;
+use clap::Parser;
 
-}
-fn print_help(){
+fn _print_help(){
     let usage = "A calendar command-line tool written in rust
 Usage: rust-calendar [ARGUMENTS]
 Arguments:
@@ -93,82 +17,20 @@ Arguments:
     println!("{}",usage);
 }
 fn main() {
-    let args:Vec<String> = env::args().collect();
-    if args.len()==1{
-        Calendar::get_print_calendar_now();
-    }
-    
-    if args.len()==2{
-        match args[1].as_str() {
-            "now" => {
-                Calendar::get_print_calendar_now();
-            }
-            "debug_calendar" => {
-                println!("{:#?}",Calendar::get_calendar_now());
-            }
-            "help" =>{
-                print_help();
-            },
-            "year_month"=>{
-                println!("year_month:
-Usage:rust-calendar year_month YEAR MONTH")
-            }
-            _ => {
-                eprintln!("unknown arguments");
-            }
-        }
-    }
-    if args.len() == 3{
-        match args[1].as_str() {
-            _=>{
-                eprintln!("unknown arguments");
-            }
-        }
-    }
-    if args.len() == 4{
-        match args[1].as_str() {
-            "year_month" => {
-                let year = match args[2].parse().ok() {
-                    Some(y) => y,
-                    None => panic!("Error year"),
-                };
-                let month = match args[3].parse().ok() {
-                    Some(m) => m,
-                    None => panic!("Error month"),
-                };
-                let nd = match NaiveDate::from_ymd_opt(year, month, 1) {
-                    Some(nd) => nd,
-                    None => panic!("Error date"),
-                };
-                let mut c = Calendar::new(nd.weekday().num_days_from_sunday(), Calendar::num_day_of_month(nd.year(), nd.month()));
-                c.init();
-                c.print_calendar();
-            },
-            _=>{
-                eprintln!("unknown arguments");
-            }
-        }
-    }
-    if args.len() == 5{
-        match args[1].as_str() {
-            _=>{
-                eprintln!("unknown arguments");
-            }
-        }
+    let cil = options::Cil::parse();
+    match &cil.command{
+        Some(options::Commands::Date { year, month }) => {
+            Calendar::from_year_month((&year).as_ref().unwrap().parse().expect("Error year"),(&month).as_ref().unwrap().parse().expect("Error year"));
+        },
+        Some(options::Commands::Now)=>{
+            Calendar::get_print_calendar_now();
+        },
+        Some(options::Commands::DebugInfo)=>{
+            println!("{:?}",Calendar::get_calendar_now());
+        },
+        None => {
+            options::Cil::parse_from(vec!["rust-calendar","help"].iter());
+        },
     }
 }
 
-#[cfg(test)]
-mod tests{
-    use super::*;
-    #[test]
-    fn can_print(){
-        let mut c: Calendar = Calendar::new(6, 29);
-        c.init();
-        c.print_calendar();    
-    }
-    #[test]
-    fn print_calendar_now(){
-        Calendar::get_print_calendar_now();
-    }
-}

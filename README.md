@@ -1,14 +1,22 @@
 # rust-calendar
+生锈的日历  
 一个使用rust编写的日历，可以打印某个月的日历  
 适合初学者学习此项目
 ```
 A calendar command-line tool written in rust
-Usage: rust-calendar [ARGUMENTS]
-Arguments:
-    now                 Prints the calendar for the current month
-    debug_calendar      Debug prints the calendar for the current month
-    help                Show this help
-    year_month          Print a calendar for a month and year,Usage:rust-calendar year_month YEAR MONTH
+
+Usage: rust-calendar [COMMAND]
+
+Commands:
+  now         Now get the calendar for this month.
+  date        Usage: rust-calendar date [YEAR] [MONTH]
+                  Get the calendar for a month and year.
+  debug-info  Debug output information.
+  help        Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help information
+  -V, --version  Print version information
 ```
 ## 编译
 ```shell
