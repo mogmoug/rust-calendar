@@ -2,5 +2,6 @@
 #![crate_type = "lib"]
 
 pub mod calendar;
+pub use calendar::Calendar;
 mod test;
-mod options;
+pub mod options;

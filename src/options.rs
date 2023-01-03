@@ -7,6 +7,9 @@ use clap::*;
 pub struct Cil{
     #[command(subcommand)]
     pub command: Option<Commands>,
+    /// The first day of the week.Sunday(0) or Monday(1).
+    #[arg(short,long,default_value_t = 0)]
+    pub the_first_day_of_the_week: i8,
 }
 
 #[derive(Subcommand)]

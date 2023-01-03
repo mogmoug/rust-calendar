@@ -1,11 +1,11 @@
-# rust-calendar
+# [rust-calendar](https://github.com/mogmoug/rust-calendar)
 生锈的日历  
 一个使用rust编写的日历，可以打印某个月的日历  
 适合初学者学习此项目
 ```
 A calendar command-line tool written in rust
 
-Usage: rust-calendar [COMMAND]
+Usage: rust-calendar [OPTIONS] [COMMAND]
 
 Commands:
   now         Now get the calendar for this month.
@@ -15,8 +15,12 @@ Commands:
   help        Print this message or the help of the given subcommand(s)
 
 Options:
-  -h, --help     Print help information
-  -V, --version  Print version information
+  -t, --the-first-day-of-the-week <THE_FIRST_DAY_OF_THE_WEEK>
+          The first day of the week.Sunday(0) or Monday(1) [default: 0]
+  -h, --help
+          Print help information
+  -V, --version
+          Print version information
 ```
 ## 编译
 ```shell
