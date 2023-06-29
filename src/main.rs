@@ -3,7 +3,7 @@
 
 mod calendar;
 mod options;
-use calendar::Calendar;
+use calendar::{Calendar, WeekStartingFrom};
 use clap::Parser;
 
 fn _print_help(){
@@ -18,15 +18,15 @@ Arguments:
 }
 fn main() {
     let cil = options::Cil::parse();
+    //看看用户输入的都可以干什么
     match &cil.command{
         Some(options::Commands::Date { year, month }) => {
-            Calendar::from_year_month((&year).as_ref().unwrap().parse().expect("Error year"),(&month).as_ref().unwrap().parse().expect("Error year"),cil.the_first_day_of_the_week);
+            let year = year.as_ref().unwrap().parse().expect("Error year");
+            let month = month.as_ref().unwrap().parse().expect("Error month");
+            Calendar::from_year_month(WeekStartingFrom::from_number(cil.the_first_day_of_the_week),year, month).print();
         },
         Some(options::Commands::Now)=>{
-            Calendar::get_print_calendar_now(cil.the_first_day_of_the_week);
-        },
-        Some(options::Commands::DebugInfo)=>{
-            println!("{:?}",Calendar::get_calendar_now(cil.the_first_day_of_the_week));
+            Calendar::from_now(WeekStartingFrom::from_number(cil.the_first_day_of_the_week)).print();
         },
         None => {
             options::Cil::parse_from(vec!["rust-calendar","help"].iter());

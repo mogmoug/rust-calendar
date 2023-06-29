@@ -7,19 +7,11 @@ mod tests{
     #[test]
     fn test_print_calendar(){
         use crate::calendar::Calendar;
-        let c = Calendar::get_calendar_now(0);
-        c.print_calendar();
-    }
-    #[test]
-    fn can_print(){
-        use crate::calendar::Calendar;
-        let mut c: Calendar = Calendar::new(6, 29,0);
-        c.init();
-        c.print_calendar();    
+        Calendar::from_year_month(crate::calendar::WeekStartingFrom::StartingFromSunday,2023, 6).print();
     }
     #[test]
     fn print_calendar_now(){
         use crate::calendar::Calendar;
-        Calendar::get_print_calendar_now(0);
+        Calendar::from_now(crate::calendar::WeekStartingFrom::StartingFromSunday).print();
     }
 }
