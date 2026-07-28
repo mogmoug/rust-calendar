@@ -1,4 +1,5 @@
-use rust_calendar::calendar::Calendar;
-fn main(){
-    Calendar::from_now(rust_calendar::calendar::WeekStartingFrom::StartingFromSunday).print();
+use rust_calendar::calendar::{Calendar, WeekStartingFrom};
+
+fn main() {
+    Calendar::from_now(WeekStartingFrom::StartingFromSunday).print();
 }
